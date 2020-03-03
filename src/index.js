@@ -315,7 +315,7 @@ module.exports = class Matrix {
           for (let i = 0; i < events.length; i++) {
             const element = events[i]
             // Get meesages.
-            if (element.type === 'm.room.message') {
+            if (element.type === 'm.room.message' && element.sender !== this.matrixUser) {
               messages.push({
                 type: element.content.msgtype === 'm.action' ? 'msg-action' : 'msg-text',
                 roomId: roomId,
