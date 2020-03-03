@@ -1,17 +1,17 @@
-# Lorena-matrix
+# matrix-lib
 
-`lorena-matrix` is a caelum api for matrix connection used in `Lorena`.
+`matrix-lib` is a caelum api for matrix connection used in `Lorena SSI`.
 
 ## Installation
 
 ```bash
-npm @caelum-tech/lorena-matrix
+npm @lorena-ssi/matrix-lib
 ```
 
 ## Getting Started
 
 ```javascript
-const Matrix = require('@caelum-tech/lorena-matrix')
+const Matrix = require('@lorena-ssi/lorena-matrix')
 // Creating class Matrix with parameter `homesrever`
 const matrix = new Matrix('https://matrix.org')
 // Check if user exists
