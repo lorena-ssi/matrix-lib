@@ -132,31 +132,20 @@ module.exports = class Matrix {
    * @param {string} type Type of the connection.
    * @returns {Promise} Return a promise with the Name of the user.
    */
-  createConnection (did, didMethod, roomName, matrixUser, matrixFederation, type = 'contact') {
+  createConnection (roomName, userId) {
     let roomId = ''
-    logger.key('Create connection to ', matrixUser)
+    logger.key('Create connection to ', userId)
     return new Promise((resolve, reject) => {
       const apiCreate = this.api + 'createRoom?access_token=' + this.connection.access_token
       axios.post(apiCreate, { name: roomName, visiblity: 'private' })
         .then((res, err) => {
           // Invite user to connect
           roomId = escape(res.data.room_id)
-          const apiInvite = this.api +
-            'rooms/' + roomId +
-            '/invite?access_token=' +
-            this.connection.access_token
-          return axios.post(apiInvite, { user_id: '@' + matrixUser + ':' + matrixFederation })
+          const apiInvite = this.api + 'rooms/' + roomId + '/invite?access_token=' + this.connection.access_token
+          return axios.post(apiInvite, { user_id: userId })
         })
         .then((res) => {
-          const contact = {
-            room_id: roomId,
-            did: did,
-            didMethod: didMethod,
-            matrixUser: matrixUser,
-            matrixFederation: matrixFederation,
-            type: type
-          }
-          resolve(contact)
+          resolve(roomId)
         })
         .catch((error) => {
           console.log(error.error)
