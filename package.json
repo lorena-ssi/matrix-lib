@@ -1,5 +1,5 @@
 {
-  "name": "@caelum-tech/lorena-matrix",
+  "name": "@lorena-ssi/matrix-lib",
   "version": "1.0.0",
   "main": "src/index.js",
   "author": "Alex Puig",
