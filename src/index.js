@@ -159,8 +159,8 @@ module.exports = class Matrix {
       axios.post(apiCreate, { name: roomName, visiblity: 'private' })
         .then((res, err) => {
           // Invite user to connect
-          roomId = escape(res.data.room_id)
-          const apiInvite = this.api + 'rooms/' + roomId + '/invite?access_token=' + this.connection.access_token
+          roomId = res.data.room_id
+          const apiInvite = this.api + 'rooms/' + escape(roomId) + '/invite?access_token=' + this.connection.access_token
           return axios.post(apiInvite, { user_id: userId })
         })
         .then((res) => {
