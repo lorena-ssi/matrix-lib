@@ -125,6 +125,25 @@ module.exports = class Matrix {
   }
 
   /**
+   * Checks if the username is available
+   *
+   * @param {string} username to check
+   * @returns {Promise} of true if username is available
+   */
+  async joinedRooms () {
+    return new Promise((resolve, reject) => {
+      axios.get(this.api + 'joined_rooms?access_token=' + this.connection.access_token)
+        .then(async (res) => {
+          resolve(res.data.joined_rooms)
+        })
+        .catch((_error) => {
+          /* istanbul ignore next */
+          resolve(false)
+        })
+    })
+  }
+
+  /**
    * Opens a connection to another user.
    *
    * @param {string} handlerTo User to connect with.
