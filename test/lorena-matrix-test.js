@@ -13,6 +13,7 @@ const expect = chai.expect
 const readFile = util.promisify(fs.readFile)
 
 let token = ''
+let leaveRoom = ''
 
 describe('Matrix - Lorena API', function () {
   var matrix = new Matrix('https://matrix.caelumlabs.com')
@@ -20,11 +21,6 @@ describe('Matrix - Lorena API', function () {
   const password = 'nikola'
 
   it('should register and connect to matrix', async () => {
-    /*
-    if (await matrix.available(matrixUser)) {
-      await matrix.register(matrixUser, password)
-    }
-    */
     expect(await matrix.available(matrixUser)).to.equal(false)
     token = await matrix.connect(matrixUser, password)
     expect(token).to.have.lengthOf.above(10)
@@ -38,9 +34,17 @@ describe('Matrix - Lorena API', function () {
 
   it('should return all matrix rooms', async () => {
     const rooms = await matrix.joinedRooms()
+    leaveRoom = rooms[0]
+    console.log(rooms)
     expect(rooms).to.exist
     expect(rooms).to.have.lengthOf.above(0)
   })
+
+  it('should Leave a room', async () => {
+    await matrix.leaveRoom(leaveRoom)
+    // POST /_matrix/client/r0/rooms/%21nkl290a%3Amatrix.org/l
+  })
+
 
   /* it('should create connection with ' + username2, async () => {
     const name = (Math.floor(Math.random()*9999)).toString()

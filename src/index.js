@@ -144,6 +144,29 @@ module.exports = class Matrix {
   }
 
   /**
+   * Checks if the username is available
+   *
+   * @param {string} roomID Room  to leave
+   * @returns {Promise} of true if success
+   */
+  async leaveRoom (roomId) {
+    return new Promise((resolve) => {
+      axios.post(this.api + 'rooms/' + escape(roomId) + '/leave?access_token=' + this.connection.access_token)
+        .then((res) => {
+          return axios.post(this.api + 'rooms/' + escape(roomId) + '/forget?access_token=' + this.connection.access_token)
+        })
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((_error) => {
+          console.log(_error)
+          /* istanbul ignore next */
+          resolve(false)
+        })
+    })
+  }
+
+  /**
    * Opens a connection to another user.
    *
    * @param {string} handlerTo User to connect with.
