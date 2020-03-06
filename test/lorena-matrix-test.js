@@ -78,10 +78,11 @@ describe('Matrix - Lorena API', function () {
   })
 
   it('should upload a file to matrix', async () => {
-    // const filename = 'simple'
-    // const type = 'text/plain'
-    // git push -u origin masterconst file = await readFile('test/assets/simple.txt')
-    // const a = await matrix.uploadFile(file, filename, type)
+    const filename = 'simple'
+    const type = 'text/plain'
+    const file = await readFile('test/assets/simple.txt')
+    const a = await matrix.uploadFile(file, filename, type)
+    console.log(a)
   })
 
   it('should download a file from matrix', async () => {
