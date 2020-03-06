@@ -41,7 +41,7 @@ describe('Matrix - Lorena API', function () {
   })
 
   it('should Leave a room', async () => {
-    await matrix.leaveRoom(leaveRoom)
+    // await matrix.leaveRoom(leaveRoom)
     // POST /_matrix/client/r0/rooms/%21nkl290a%3Amatrix.org/l
   })
 
