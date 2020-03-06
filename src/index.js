@@ -350,7 +350,7 @@ module.exports = class Matrix {
       //    <media-id> : An opaque ID which identifies the content.`
 
       // Constructing route
-      const apiCall = this.api +
+      const apiCall = this.media +
         'upload?filename=' + filename +
         '&access_token=' + this.connection.access_token
 
