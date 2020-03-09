@@ -28,5 +28,10 @@
     "lint": "eslint ./src ./test",
     "npm:publish": "npm publish --access public",
     "test": "./node_modules/.bin/mocha --reporter spec"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   }
 }

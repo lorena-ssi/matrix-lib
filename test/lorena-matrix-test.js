@@ -13,7 +13,6 @@ const expect = chai.expect
 const readFile = util.promisify(fs.readFile)
 
 let token = ''
-let leaveRoom = ''
 
 describe('Matrix - Lorena API', function () {
   var matrix = new Matrix('https://matrix.caelumlabs.com')
@@ -44,7 +43,6 @@ describe('Matrix - Lorena API', function () {
     // await matrix.leaveRoom(leaveRoom)
     // POST /_matrix/client/r0/rooms/%21nkl290a%3Amatrix.org/l
   })
-
 
   /* it('should create connection with ' + username2, async () => {
     const name = (Math.floor(Math.random()*9999)).toString()
