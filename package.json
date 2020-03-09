@@ -27,7 +27,7 @@
   "scripts": {
     "start": "node src/index.js",
     "coverage": "nyc mocha test --timeout 20000 && nyc report --reporter=html",
-    "coveralls": "nyc mocha test -- temeout 20000 && nyc report --reporter=text-lcov | coveralls",
+    "coveralls": "nyc mocha test --timeout 20000 && nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint ./src ./test",
     "npm:publish": "npm publish --access public",
     "test": "./node_modules/.bin/mocha --reporter spec"
