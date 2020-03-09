@@ -59,7 +59,7 @@ describe('Matrix - Lorena API', function () {
   })
 
   it('should sendMessage', async () => {
-    console.log("Current romm_id", tempRoomId)
+    console.log("Current room_id", tempRoomId)
     const a  = await matrix.sendMessage(
       tempRoomId, // roomId (in this case from `randomRoomName`)
       'm.text', // type
@@ -68,7 +68,7 @@ describe('Matrix - Lorena API', function () {
     console.log("Message sent", a)
   }) */
 
-  it('should extratctDid', () => {
+  it('should extractDid', () => {
     expect(matrix.extractDid('!asdf:matrix.caelumlabs.com')).to.eql({
       matrixUser: 'asdf',
       matrixFederation: 'matrix.caelumlabs.com'
