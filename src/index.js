@@ -8,7 +8,7 @@ const Logger = require('./logger')
 const logger = new Logger()
 
 /**
- * Javascript Class to interact   with Zenroom.
+ * Javascript Class to interact with Matrix.
  */
 module.exports = class Matrix {
   constructor (homeserver = process.env.SERVER_MATRIX) {
@@ -172,7 +172,7 @@ module.exports = class Matrix {
     logger.key('Create connection to ', userId)
     return new Promise((resolve, reject) => {
       const apiCreate = this.api + 'createRoom?access_token=' + this.connection.access_token
-      axios.post(apiCreate, { name: roomName, visiblity: 'private' })
+      axios.post(apiCreate, { name: roomName, visibility: 'private' })
         .then((res, err) => {
           // Invite user to connect
           roomId = res.data.room_id
@@ -284,7 +284,7 @@ module.exports = class Matrix {
   }
 
   /**
-   * Extract Accepted Invitations fro mthe API Call to matrix server - events
+   * Extract Accepted Invitations from the API Call to matrix server - events
    *
    * @param {object} rooms Array of events related to rooms
    * @returns {Array} Array of all the new invitations to connect.
@@ -335,7 +335,7 @@ module.exports = class Matrix {
         if (events.length > 0) {
           for (let i = 0; i < events.length; i++) {
             const element = events[i]
-            // Get meesages.
+            // Get messages.
             if (element.type === 'm.room.message' && element.sender !== this.matrixUser) {
               messages.push({
                 type: element.content.msgtype === 'm.action' ? 'msg-action' : 'msg-text',
@@ -373,7 +373,7 @@ module.exports = class Matrix {
           resolve(res)
         })
         .catch((error) => {
-          reject(new Error('Could not uplad File', error))
+          reject(new Error('Could not upload File', error))
         })
     })
   }
@@ -422,7 +422,7 @@ module.exports = class Matrix {
   }
 
   /**
-   * Returs the did associated to a matrix user
+   * Returns the did associated to a matrix user
    *
    * @param {string} sender Sender
    * @returns {string} Full DID

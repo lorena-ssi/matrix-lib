@@ -15,7 +15,7 @@ npm @lorena-ssi/matrix-lib
 
 ```javascript
 const Matrix = require('@lorena-ssi/lorena-matrix')
-// Creating class Matrix with parameter `homesrever`
+// Creating class Matrix with parameter `homeserver`
 const matrix = new Matrix('https://matrix.org')
 // Check if user exists
 if ( (await matrix.available(username)) ) {
@@ -25,7 +25,7 @@ if ( (await matrix.available(username)) ) {
     matrix.connect(username, password)
         .then((res)=>{console.log("Connected:", res)})
         .catch((e)=>{console.log("Error:", e)})
-    // Read events: If argument=='' then all history events are reveived
+    // Read events: If argument=='' then all history events are received
     matrix.events('')
         .then((a,b)=>{console.log("Correct:", a)})
         .catch((e)=>{console.log("Error in events:", e)})
