@@ -1,13 +1,14 @@
 /* eslint-disable no-async-promise-executor */
 'use strict'
 const axios = require('axios')
+const fs = require('fs')
 
 // Logger
 const Logger = require('./logger')
 const logger = new Logger()
 
 /**
- * Javascript Class to interact with Zenroom.
+ * Javascript Class to interact   with Zenroom.
  */
 module.exports = class Matrix {
   constructor (homeserver = process.env.SERVER_MATRIX) {
@@ -39,9 +40,8 @@ module.exports = class Matrix {
           this.matrixUser = '@' + username + ':' + this.serverName
           resolve(result.data.access_token)
         })
-        .catch((_error) => {
-          /* istanbul ignore next */
-          reject(new Error('Could not connect to Matrix'))
+        .catch((error) => {
+          reject(new Error('Could not connect to Matrix'), error)
         })
     })
   }
@@ -97,10 +97,7 @@ module.exports = class Matrix {
         resolve({ nextBatch: res.data.next_batch, events })
       })
         .catch((error) => {
-        /* istanbul ignore next */
-          logger.error(error)
-          /* istanbul ignore next */
-          reject(error)
+          reject(new Error('Could not list events', error))
         })
     })
   }
@@ -117,9 +114,8 @@ module.exports = class Matrix {
         .then(async (res) => {
           resolve(true)
         })
-        .catch((_error) => {
-          /* istanbul ignore next */
-          resolve(false)
+        .catch((error) => {
+          reject(new Error('Could not check available name', error))
         })
     })
   }
@@ -136,9 +132,8 @@ module.exports = class Matrix {
         .then(async (res) => {
           resolve(res.data.joined_rooms)
         })
-        .catch((_error) => {
-          /* istanbul ignore next */
-          resolve(false)
+        .catch((error) => {
+          reject(new Error('Could not list joined rooms', error))
         })
     })
   }
@@ -150,7 +145,7 @@ module.exports = class Matrix {
    * @returns {Promise} of true if success
    */
   async leaveRoom (roomId) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       axios.post(this.api + 'rooms/' + escape(roomId) + '/leave?access_token=' + this.connection.access_token)
         .then((res) => {
           return axios.post(this.api + 'rooms/' + escape(roomId) + '/forget?access_token=' + this.connection.access_token)
@@ -158,10 +153,8 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((_error) => {
-          console.log(_error)
-          /* istanbul ignore next */
-          resolve(false)
+        .catch((error) => {
+          reject(new Error('Could not leave room', error))
         })
     })
   }
@@ -190,8 +183,7 @@ module.exports = class Matrix {
           resolve(roomId)
         })
         .catch((error) => {
-          console.log(error.error)
-          reject(new Error('Could not create room'))
+          reject(new Error('Could not create room', error))
         })
     })
   }
@@ -217,8 +209,7 @@ module.exports = class Matrix {
           resolve(res)
         })
         .catch((error) => {
-          console.log(error)
-          reject(new Error('Could not create room'))
+          reject(new Error('Could not create room', error))
         })
     })
   }
@@ -236,9 +227,8 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((_error) => {
-          console.log(_error)
-          reject(new Error('Could not accept invitation', _error))
+        .catch((error) => {
+          reject(new Error('Could not accept invitation', error))
         })
     })
   }
@@ -382,9 +372,8 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((_error) => {
-          console.log(_error)
-          reject(new Error('Could not uplad File', _error))
+        .catch((error) => {
+          reject(new Error('Could not uplad File', error))
         })
     })
   }
@@ -400,8 +389,34 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((_error) => {
-          reject(new Error('Could not download file', _error))
+        .catch((error) => {
+          reject(new Error('Could not download file', error))
+        })
+    })
+  }
+
+  /**
+   * Sends a file over many messages on matrix
+   * @param {string} path File path to send
+   * @param {string} roomId roomId to send the file to.
+   */
+  sendFile (path, roomId) {
+    return new Promise((resolve) => {
+      const chunks = []
+      const reader = fs.createReadStream(path, { highWaterMark: 4 * 1024 })
+      reader
+        .on('data', function (chunk) {
+          chunks.push(chunk)
+          console.log('Chunk ' + chunk.toString().length)
+        })
+        .on('end', function () {
+          console.log('The End')
+          const file = fs.createWriteStream('example.pdf')
+          for (let i = 0; i < chunks.length; i++) {
+            file.write(chunks[i])
+          }
+          file.end()
+          resolve()
         })
     })
   }
