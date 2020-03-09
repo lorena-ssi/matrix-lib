@@ -114,8 +114,8 @@ module.exports = class Matrix {
         .then(async (res) => {
           resolve(true)
         })
-        .catch((error) => {
-          reject(new Error('Could not check available name', error))
+        .catch(() => {
+          resolve(false)
         })
     })
   }
