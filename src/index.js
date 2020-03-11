@@ -51,7 +51,7 @@ module.exports = class Matrix {
    *
    * @param {string} username Matrix username
    * @param {string} password Matrix password
-   * @returns {Promise} result
+   * @returns {Promise} username (if successful)
    */
   async register (username, password) {
     return new Promise((resolve, reject) => {
@@ -64,7 +64,6 @@ module.exports = class Matrix {
           resolve(username)
         })
         .catch((error) => {
-          /* istanbul ignore next */
           reject(error)
         })
     })
@@ -121,10 +120,9 @@ module.exports = class Matrix {
   }
 
   /**
-   * Checks if the username is available
+   * Returns an array of rooms where the user is currently a member
    *
-   * @param {string} username to check
-   * @returns {Promise} of true if username is available
+   * @returns {Promise} array of rooms currently joined
    */
   async joinedRooms () {
     return new Promise((resolve, reject) => {
@@ -139,9 +137,9 @@ module.exports = class Matrix {
   }
 
   /**
-   * Checks if the username is available
+   * Leave the specified room
    *
-   * @param {string} roomID Room  to leave
+   * @param {string} roomId Room to leave
    * @returns {Promise} of true if success
    */
   async leaveRoom (roomId) {
@@ -162,10 +160,9 @@ module.exports = class Matrix {
   /**
    * Opens a connection to another user.
    *
-   * @param {string} handlerTo User to connect with.
-   * @param {string} handlerFrom User to connect from.
-   * @param {string} type Type of the connection.
-   * @returns {Promise} Return a promise with the Name of the user.
+   * @param {string} roomName Name of new room to create
+   * @param {string} userId User name to connect to (in format @username:home.server)
+   * @returns {Promise} Return a promise with the string roomId (in format !random:home.server)
    */
   createConnection (roomName, userId) {
     let roomId = ''
@@ -194,12 +191,13 @@ module.exports = class Matrix {
    * @param {string} roomId Room to send the message to.
    * @param {string} type Type of message.
    * @param {string} body Body of the message.
+   * @param {string=} token access token (otherwise use the existing connection token)
    * @returns {Promise} Result of sending a message
    */
   sendMessage (roomId, type, body, token = false) {
     return new Promise((resolve, reject) => {
       const apiToken = (token === false) ? this.connection.access_token : token
-      const apiSendMessage = this.api + 'rooms/' + roomId + '/send/m.room.message/' + this.txnId + '?access_token=' + apiToken
+      const apiSendMessage = this.api + 'rooms/' + escape(roomId) + '/send/m.room.message/' + this.txnId + '?access_token=' + apiToken
       axios.put(apiSendMessage, {
         msgtype: type,
         body: body
@@ -209,7 +207,7 @@ module.exports = class Matrix {
           resolve(res)
         })
         .catch((error) => {
-          reject(new Error('Could not create room', error))
+          reject(new Error('Could not send message', error))
         })
     })
   }
@@ -218,7 +216,7 @@ module.exports = class Matrix {
    * Accepts invitation to join a room.
    *
    * @param {string} roomId RoomID
-   * @returns {Promise} Result of the SQL Query
+   * @returns {Promise} Result of the Matrix call
    */
   acceptConnection (roomId) {
     return new Promise((resolve, reject) => {
@@ -237,6 +235,7 @@ module.exports = class Matrix {
    * Extract Invitations from the API Call to matrix server - events
    *
    * @param {object} rooms Array of events related to rooms
+   * @returns {object} array of invitations
    */
   getIncomingInvitations (rooms) {
     const roomEmpty = !Object.keys(rooms).length === 0 && rooms.constructor === Object
@@ -352,8 +351,12 @@ module.exports = class Matrix {
   }
 
   /**
+   * Upload a file
    *
-   * @param {*} sender
+   * @param {string} file contents
+   * @param {string} filename filename
+   * @param {string=} type mime-type
+   * @returns {Promise} result of Matrix call
    */
   uploadFile (file, filename, type = 'application/text') {
     return new Promise(async (resolve, reject) => {
@@ -379,8 +382,12 @@ module.exports = class Matrix {
   }
 
   /**
+   * Download file from Matrix
    *
-   * @param {*} sender
+   * @param {string} mediaId media ID
+   * @param {string} filename file name
+   * @param {string=} serverName server name
+   * @returns {Promise} result of Matrix call
    */
   downloadFile (mediaId, filename, serverName = this.serverName) {
     return new Promise(async (resolve, reject) => {
@@ -396,9 +403,11 @@ module.exports = class Matrix {
   }
 
   /**
-   * Sends a file over many messages on matrix
+   * TODO - this seems to have issues
+   *
    * @param {string} path File path to send
    * @param {string} roomId roomId to send the file to.
+   * @returns {Promise} no result yet TODO
    */
   sendFile (path, roomId) {
     return new Promise((resolve) => {
