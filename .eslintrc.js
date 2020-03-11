@@ -7,7 +7,8 @@ module.exports = {
   },
   extends: [
     'standard',
-    'plugin:chai-friendly/recommended'
+    'plugin:chai-friendly/recommended',
+    'plugin:jsdoc/recommended'
   ],
   globals: {
     Atomics: 'readonly',
@@ -17,7 +18,8 @@ module.exports = {
     ecmaVersion: 2018
   },
   plugins: [
-    'chai-friendly'
+    'chai-friendly',
+    'jsdoc'
   ],
   rules: {
   }

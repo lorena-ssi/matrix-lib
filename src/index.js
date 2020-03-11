@@ -139,7 +139,7 @@ module.exports = class Matrix {
   /**
    * Leave the specified room
    *
-   * @param {string} roomID Room to leave
+   * @param {string} roomId Room to leave
    * @returns {Promise} of true if success
    */
   async leaveRoom (roomId) {
@@ -235,6 +235,7 @@ module.exports = class Matrix {
    * Extract Invitations from the API Call to matrix server - events
    *
    * @param {object} rooms Array of events related to rooms
+   * @returns {object} array of invitations
    */
   getIncomingInvitations (rooms) {
     const roomEmpty = !Object.keys(rooms).length === 0 && rooms.constructor === Object
@@ -350,8 +351,12 @@ module.exports = class Matrix {
   }
 
   /**
+   * Upload a file
    *
-   * @param {*} sender
+   * @param {string} file contents
+   * @param {string} filename filename
+   * @param {string=} type mime-type
+   * @returns {Promise} result of Matrix call
    */
   uploadFile (file, filename, type = 'application/text') {
     return new Promise(async (resolve, reject) => {
@@ -377,10 +382,12 @@ module.exports = class Matrix {
   }
 
   /**
+   * Download file from Matrix
    *
    * @param {string} mediaId media ID
    * @param {string} filename file name
    * @param {string=} serverName server name
+   * @returns {Promise} result of Matrix call
    */
   downloadFile (mediaId, filename, serverName = this.serverName) {
     return new Promise(async (resolve, reject) => {
@@ -396,9 +403,11 @@ module.exports = class Matrix {
   }
 
   /**
-   * Sends a file over many messages on matrix
+   * TODO - this seems to have issues
+   *
    * @param {string} path File path to send
    * @param {string} roomId roomId to send the file to.
+   * @returns {Promise} no result yet TODO
    */
   sendFile (path, roomId) {
     return new Promise((resolve) => {
