@@ -3,7 +3,7 @@
 `matrix-lib` is a caelum api for matrix connection used in `Lorena SSI`.
 
 [![Build Status](https://travis-ci.com/lorena-ssi/matrix-lib.svg?branch=master)](https://travis-ci.com/lorena-ssi/matrix-lib)
-[![Coverage Status](https://coveralls.io/repos/github/lorena-ssi/matrix-lib/badge.svg?branch=travis)](https://coveralls.io/github/lorena-ssi/matrix-lib?branch=travis)
+[![Coverage Status](https://coveralls.io/repos/github/lorena-ssi/matrix-lib/badge.svg?branch=master)](https://coveralls.io/github/lorena-ssi/matrix-lib?branch=master)
 
 ## Installation
 
