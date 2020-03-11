@@ -64,7 +64,6 @@ module.exports = class Matrix {
           resolve(username)
         })
         .catch((error) => {
-          /* istanbul ignore next */
           reject(error)
         })
     })
@@ -199,7 +198,7 @@ module.exports = class Matrix {
   sendMessage (roomId, type, body, token = false) {
     return new Promise((resolve, reject) => {
       const apiToken = (token === false) ? this.connection.access_token : token
-      const apiSendMessage = this.api + 'rooms/' + roomId + '/send/m.room.message/' + this.txnId + '?access_token=' + apiToken
+      const apiSendMessage = this.api + 'rooms/' + escape(roomId) + '/send/m.room.message/' + this.txnId + '?access_token=' + apiToken
       axios.put(apiSendMessage, {
         msgtype: type,
         body: body
@@ -209,7 +208,7 @@ module.exports = class Matrix {
           resolve(res)
         })
         .catch((error) => {
-          reject(new Error('Could not create room', error))
+          reject(new Error('Could not send message', error))
         })
     })
   }

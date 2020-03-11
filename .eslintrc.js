@@ -2,10 +2,12 @@ module.exports = {
   env: {
     commonjs: true,
     es6: true,
+    mocha: true,
     node: true
   },
   extends: [
-    'standard'
+    'standard',
+    'plugin:chai-friendly/recommended'
   ],
   globals: {
     Atomics: 'readonly',
@@ -14,6 +16,9 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2018
   },
+  plugins: [
+    'chai-friendly'
+  ],
   rules: {
   }
 }
