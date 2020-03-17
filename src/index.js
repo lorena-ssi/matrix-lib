@@ -3,9 +3,9 @@
 const axios = require('axios')
 const fs = require('fs')
 
-// Logger
-const Logger = require('./logger')
-const logger = new Logger()
+// Debug
+var debug = require('debug')('did:debug:matrix')
+var error = require('debug')('did:error:matrix')
 
 /**
  * Javascript Class to interact with Matrix.
@@ -166,7 +166,7 @@ module.exports = class Matrix {
    */
   createConnection (roomName, userId) {
     let roomId = ''
-    logger.key('Create connection to ', userId)
+    debug('Create connection to ' + userId)
     return new Promise((resolve, reject) => {
       const apiCreate = this.api + 'createRoom?access_token=' + this.connection.access_token
       axios.post(apiCreate, { name: roomName, visibility: 'private' })
@@ -416,10 +416,10 @@ module.exports = class Matrix {
       reader
         .on('data', function (chunk) {
           chunks.push(chunk)
-          console.log('Chunk ' + chunk.toString().length)
+          debug('Chunk ' + chunk.toString().length)
         })
         .on('end', function () {
-          console.log('The End')
+          debug('The End')
           const file = fs.createWriteStream('example.pdf')
           for (let i = 0; i < chunks.length; i++) {
             file.write(chunks[i])

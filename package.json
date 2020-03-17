@@ -1,11 +1,12 @@
 {
   "name": "@lorena-ssi/matrix-lib",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "src/index.js",
   "author": "Alex Puig",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2",
+    "debug": "^4.1.1",
     "fs": "^0.0.1-security"
   },
   "devDependencies": {
