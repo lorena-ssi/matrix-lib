@@ -53,7 +53,12 @@ describe('Matrix - Lorena API', function () {
 
   it('should return all matrix events in an array', async () => {
     const events = await matrix.events('')
-    console.log('events', events)
+    expect(events.nextBatch).to.have.lengthOf.above(8)
+    expect(events.events).to.exist
+  })
+
+  it('should return all matrix events in an array with filter', async () => {
+    const events = await matrix.events('', { room: { timeline: { limit: 100 } } })
     expect(events.nextBatch).to.have.lengthOf.above(8)
     expect(events.events).to.exist
   })
