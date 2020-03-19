@@ -5,7 +5,7 @@ const fs = require('fs')
 
 // Debug
 var debug = require('debug')('did:debug:matrix')
-var error = require('debug')('did:error:matrix')
+// var error = require('debug')('did:error:matrix')
 
 /**
  * Javascript Class to interact with Matrix.
@@ -73,12 +73,14 @@ module.exports = class Matrix {
    * Listen to events.
    *
    * @param {string} nextBatch next batch of events to be asked to the matrix server.
+   * @param {object} filter a valid filter object ex: {"room":{"timeline":{"limit":100}}}
    * @returns {Promise} Return a promise with the Name of the user.
    */
-  async events (nextBatch) {
+  async events (nextBatch, filter) {
     return new Promise((resolve, reject) => {
       const apiCall = this.api +
         'sync?timeout=20000' +
+        (filter ? '&filter=' + JSON.stringify(filter) : '&filter={}') +
         '&access_token=' + this.connection.access_token +
         (nextBatch === '' ? '' : '&since=' + nextBatch)
 
