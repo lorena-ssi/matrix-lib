@@ -1,9 +1,24 @@
 {
   "name": "@lorena-ssi/matrix-lib",
   "version": "1.0.9",
+  "description": "Lorena Matrix communications Library",
   "main": "src/index.js",
-  "author": "Alex Puig",
+  "author": "Alex Puig <alex@caelumlabs.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lorena-ssi/matrix-lib.git"
+  },
+  "keywords": [
+    "lorena",
+    "identity",
+    "matrix",
+    "ssi"
+  ],
+  "bugs": {
+    "url": "https://github.com/lorena-ssi/matrix-lib/issues"
+  },
+  "homepage": "https://github.com/lorena-ssi/matrix-lib#readme",
   "dependencies": {
     "axios": "^0.19.2",
     "debug": "^4.1.1",
