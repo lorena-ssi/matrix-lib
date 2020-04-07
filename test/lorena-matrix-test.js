@@ -16,7 +16,7 @@ let token = ''
 let roomId
 
 describe('Matrix - Lorena API', function () {
-  var matrix = new Matrix('https://matrix.caelumlabs.com')
+  var matrix = new Matrix('https://matrix.test.caelumlabs.com')
   const matrixUser = uuidv4()
   const password = uuidv4()
   const matrixUser2 = uuidv4()
@@ -83,9 +83,9 @@ describe('Matrix - Lorena API', function () {
   })
 
   it('should extractDid', () => {
-    expect(matrix.extractDid('!asdf:matrix.caelumlabs.com')).to.eql({
+    expect(matrix.extractDid('!asdf:matrix.test.caelumlabs.com')).to.eql({
       matrixUser: 'asdf',
-      matrixFederation: 'matrix.caelumlabs.com'
+      matrixFederation: 'matrix.test.caelumlabs.com'
     })
   })
 
@@ -99,10 +99,10 @@ describe('Matrix - Lorena API', function () {
 
   it('should download a file from matrix', async () => {
     // Examples of uploaded files `mxc://<server-name>/<media-id>`
-    // 'mxc://matrix.caelumlabs.com/PtvDiuOtxkfgaQzVjEzYCvYo'
-    // 'mxc://matrix.caelumlabs.com/FyzwuVzfulmHxluvTANRicMv'
-    // 'mxc://matrix.caelumlabs.com/FCVtZVLJbpPMKjBzWusvkHyP'
-    const a = await matrix.downloadFile('FCVtZVLJbpPMKjBzWusvkHyP', 'simple')
+    // 'mxc://matrix.test.caelumlabs.com/PtvDiuOtxkfgaQzVjEzYCvYo'
+    // 'mxc://matrix.test.caelumlabs.com/FyzwuVzfulmHxluvTANRicMv'
+    // 'mxc://matrix.test.caelumlabs.com/FCVtZVLJbpPMKjBzWusvkHyP'
+    const a = await matrix.downloadFile('LiWVTpePXXgrGaEoWNghbhOb', 'simple')
     const file = await readFile('test/assets/simple.txt', 'utf8')
     expect(a.data).to.eql(file.toString())
   })
