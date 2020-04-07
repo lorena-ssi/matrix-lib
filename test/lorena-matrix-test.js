@@ -16,7 +16,7 @@ let token = ''
 let roomId
 
 describe('Matrix - Lorena API', function () {
-  var matrix = new Matrix('https://matrix.caelumlabs.com')
+  var matrix = new Matrix('https://matrix.test.caelumlabs.com')
   const matrixUser = uuidv4()
   const password = uuidv4()
   const matrixUser2 = uuidv4()
