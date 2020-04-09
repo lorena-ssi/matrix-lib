@@ -12,15 +12,18 @@ const expect = chai.expect
 // Convert fs.readFile into Promise version of same
 const readFile = util.promisify(fs.readFile)
 
+const matrixServer = 'labtest.matrix.lorena.tech'
+
 let token = ''
 let roomId
 
 describe('Matrix - Lorena API', function () {
-  var matrix = new Matrix('https://matrix.test.caelumlabs.com')
+  const matrix = new Matrix(`https://${matrixServer}`)
   const matrixUser = uuidv4()
   const password = uuidv4()
   const matrixUser2 = uuidv4()
   const password2 = uuidv4()
+  let mediaId
 
   it('should not recognize a nonexistent user as existing', async () => {
     expect(await matrix.available(matrixUser)).to.equal(true)
@@ -83,9 +86,9 @@ describe('Matrix - Lorena API', function () {
   })
 
   it('should extractDid', () => {
-    expect(matrix.extractDid('!asdf:matrix.test.caelumlabs.com')).to.eql({
+    expect(matrix.extractDid(`!asdf:${matrixServer}`)).to.eql({
       matrixUser: 'asdf',
-      matrixFederation: 'matrix.test.caelumlabs.com'
+      matrixFederation: matrixServer
     })
   })
 
@@ -95,14 +98,17 @@ describe('Matrix - Lorena API', function () {
     const file = await readFile('test/assets/simple.txt')
     const response = await matrix.uploadFile(file, filename, type)
     expect(response).to.be.ok
+    const uriParts = response.data.content_uri.split('/')
+    mediaId = uriParts[uriParts.length - 1]
+    expect(mediaId).to.not.be.empty
   })
 
   it('should download a file from matrix', async () => {
     // Examples of uploaded files `mxc://<server-name>/<media-id>`
-    // 'mxc://matrix.test.caelumlabs.com/PtvDiuOtxkfgaQzVjEzYCvYo'
-    // 'mxc://matrix.test.caelumlabs.com/FyzwuVzfulmHxluvTANRicMv'
-    // 'mxc://matrix.test.caelumlabs.com/FCVtZVLJbpPMKjBzWusvkHyP'
-    const a = await matrix.downloadFile('LiWVTpePXXgrGaEoWNghbhOb', 'simple')
+    // `mxc://${matrixServer}/PtvDiuOtxkfgaQzVjEzYCvYo`
+    // `mxc://${matrixServer}/FyzwuVzfulmHxluvTANRicMv`
+    // `mxc://${matrixServer}/FCVtZVLJbpPMKjBzWusvkHyP`
+    const a = await matrix.downloadFile(mediaId, 'simple')
     const file = await readFile('test/assets/simple.txt', 'utf8')
     expect(a.data).to.eql(file.toString())
   })
