@@ -8,17 +8,19 @@ const uuidv4 = require('uuid/v4')
 chai.should()
 const assert = chai.assert
 const expect = chai.expect
+chai.use(require('chai-as-promised'))
 
 // Convert fs.readFile into Promise version of same
 const readFile = util.promisify(fs.readFile)
 
-const matrixServer = 'labtest.matrix.lorena.tech'
+const matrixServer = 'labdev.matrix.lorena.tech'
+const matrixURL = `https://${matrixServer}`
 
 let token = ''
 let roomId
 
 describe('Matrix - Lorena API', function () {
-  const matrix = new Matrix(`https://${matrixServer}`)
+  const matrix = new Matrix(matrixURL)
   const matrixUser = uuidv4()
   const password = uuidv4()
   const matrixUser2 = uuidv4()
@@ -49,9 +51,42 @@ describe('Matrix - Lorena API', function () {
     assert(false, 'should have failed to register an already existing user')
   })
 
+  it('should not connect to matrix with the incorrect password', async () => {
+    await expect(matrix.connect(matrixUser, matrixUser)).to.be.rejectedWith(Error)
+  })
+
   it('should connect to matrix', async () => {
     token = await matrix.connect(matrixUser, password)
     expect(token).to.have.lengthOf.above(10)
+  })
+
+  it('should create connection with another user', async () => {
+    const name = (Math.floor(Math.random() * 9999)).toString()
+    const newRoomId = await matrix.createConnection(
+      name, // Room name (can be any)
+      `@${matrixUser2}:${matrix.serverName}` // User to connect with
+    )
+    expect(newRoomId).to.not.be.empty
+    roomId = newRoomId
+  })
+
+  it('should fail to create connection when not logged in', async () => {
+    const matrix = new Matrix(matrixURL)
+    await expect(matrix.createConnection('bogus', `@${matrixUser2}:${matrix.serverName}`)).to.be.rejectedWith(Error)
+  })
+
+  it('should sendMessage', async () => {
+    const response = await matrix.sendMessage(
+      roomId, // roomId (in this case from `randomRoomName`)
+      'm.text', // type
+      'Hello this is a test message...' // body
+    )
+    expect(response).to.be.ok
+  })
+
+  it('should fail to send message if not connected', async () => {
+    const matrix = new Matrix(matrixURL)
+    await expect(matrix.sendMessage(roomId, 'm.text', 'hello')).to.be.rejectedWith(Error)
   })
 
   it('should return all matrix events in an array', async () => {
@@ -66,23 +101,15 @@ describe('Matrix - Lorena API', function () {
     expect(events.events).to.exist
   })
 
-  it('should create connection with another user', async () => {
-    const name = (Math.floor(Math.random() * 9999)).toString()
-    const newRoomId = await matrix.createConnection(
-      name, // Room name (can be any)
-      `@${matrixUser2}:${matrix.serverName}` // User to connect with
-    )
-    expect(newRoomId).to.not.be.empty
-    roomId = newRoomId
+  it('should fail to get events if not connected', async () => {
+    const matrix = new Matrix(matrixURL)
+    await expect(matrix.events('')).to.be.rejectedWith(Error)
   })
 
-  it('should sendMessage', async () => {
-    const response = await matrix.sendMessage(
-      roomId, // roomId (in this case from `randomRoomName`)
-      'm.text', // type
-      'Hello this is a test message...' // body
-    )
-    expect(response).to.be.ok
+  it('should get all events for the other user for incoming invitations', async () => {
+    const matrix = new Matrix(matrixURL)
+    const events = await matrix.connect(matrixUser2, password2)
+    expect(events).to.exist
   })
 
   it('should extractDid', () => {
@@ -103,6 +130,11 @@ describe('Matrix - Lorena API', function () {
     expect(mediaId).to.not.be.empty
   })
 
+  it('should fail to upload file if not connected', async () => {
+    const matrix = new Matrix(matrixURL)
+    await expect(matrix.uploadFile('file')).to.be.rejectedWith(Error)
+  })
+
   it('should download a file from matrix', async () => {
     // Examples of uploaded files `mxc://<server-name>/<media-id>`
     // `mxc://${matrixServer}/PtvDiuOtxkfgaQzVjEzYCvYo`
@@ -113,6 +145,10 @@ describe('Matrix - Lorena API', function () {
     expect(a.data).to.eql(file.toString())
   })
 
+  it('should fail to download a nonexistent file from matrix', async () => {
+    await expect(matrix.downloadFile('d3aDbeEfPiE4SaLe', 'simple')).to.be.rejectedWith(Error)
+  })
+
   it('should return all matrix rooms', async () => {
     const rooms = await matrix.joinedRooms()
     expect(rooms).to.exist
@@ -120,8 +156,17 @@ describe('Matrix - Lorena API', function () {
     expect(rooms[0]).to.eq(roomId)
   })
 
+  it('should fail to return rooms if not connected', async () => {
+    const matrix = new Matrix(matrixURL)
+    await expect(matrix.joinedRooms()).to.be.rejectedWith(Error)
+  })
+
   it('should leave a room', async () => {
     const response = await matrix.leaveRoom(roomId)
     expect(response).to.be.ok
+  })
+
+  it('should get an error when attempting to leave a room twice', async () => {
+    await expect(matrix.leaveRoom(roomId)).to.be.rejectedWith(Error)
   })
 })

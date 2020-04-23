@@ -11,7 +11,10 @@ var debug = require('debug')('did:debug:matrix')
  * Javascript Class to interact with Matrix.
  */
 module.exports = class Matrix {
-  constructor (homeserver = process.env.SERVER_MATRIX) {
+  /**
+   * @param {string} homeserver Matrix homeserver for this connection
+   */
+  constructor (homeserver) {
     this.serverName = homeserver.split('//')[1]
     this.api = homeserver + '/_matrix/client/r0/'
     this.media = homeserver + '/_matrix/media/r0/'
