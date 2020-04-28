@@ -1,6 +1,6 @@
 {
   "name": "@lorena-ssi/matrix-lib",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Lorena Matrix communications Library",
   "main": "src/index.js",
   "author": "Alex Puig <alex@caelumlabs.com>",

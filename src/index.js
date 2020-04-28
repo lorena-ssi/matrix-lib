@@ -4,8 +4,8 @@ const axios = require('axios')
 const fs = require('fs')
 
 // Debug
-var debug = require('debug')('did:debug:matrix')
-// var error = require('debug')('did:error:matrix')
+const debug = require('debug')('did:debug:matrix')
+const error = require('debug')('did:error:matrix')
 
 /**
  * Javascript Class to interact with Matrix.
@@ -43,8 +43,9 @@ module.exports = class Matrix {
           this.matrixUser = '@' + username + ':' + this.serverName
           resolve(result.data.access_token)
         })
-        .catch((error) => {
-          reject(new Error('Could not connect to Matrix'), error)
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -66,8 +67,9 @@ module.exports = class Matrix {
         .then(async (res) => {
           resolve(username)
         })
-        .catch((error) => {
-          reject(error)
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -100,8 +102,9 @@ module.exports = class Matrix {
 
         resolve({ nextBatch: res.data.next_batch, events })
       })
-        .catch((error) => {
-          reject(new Error('Could not list events', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -135,8 +138,9 @@ module.exports = class Matrix {
         .then(async (res) => {
           resolve(res.data.joined_rooms)
         })
-        .catch((error) => {
-          reject(new Error('Could not list joined rooms', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -156,8 +160,9 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((error) => {
-          reject(new Error('Could not leave room', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -184,8 +189,9 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(roomId)
         })
-        .catch((error) => {
-          reject(new Error('Could not create room', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -211,8 +217,9 @@ module.exports = class Matrix {
           this.txnId++
           resolve(res)
         })
-        .catch((error) => {
-          reject(new Error('Could not send message', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -230,8 +237,9 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((error) => {
-          reject(new Error('Could not accept invitation', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -380,8 +388,9 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((error) => {
-          reject(new Error('Could not upload File', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
@@ -401,8 +410,9 @@ module.exports = class Matrix {
         .then((res) => {
           resolve(res)
         })
-        .catch((error) => {
-          reject(new Error('Could not download file', error))
+        .catch((e) => {
+          error(e)
+          reject(e)
         })
     })
   }
