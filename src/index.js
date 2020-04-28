@@ -1,7 +1,20 @@
-/* eslint-disable no-async-promise-executor */
-'use strict'
 const axios = require('axios')
 const fs = require('fs')
+const axiosRetry = require('axios-retry')
+
+// Retry with step-back to solve rate limiting problem
+axiosRetry(axios, {
+  retries: 5,
+  retryDelay: axiosRetry.exponentialDelay,
+  retryCondition: (e) => {
+    if (e.response.status === 429) {
+      debug('retrying due to rate limiting', e)
+      return true
+    } else {
+      return false
+    }
+  }
+})
 
 // Debug
 const debug = require('debug')('did:debug:matrix')
@@ -372,7 +385,7 @@ module.exports = class Matrix {
    * @returns {Promise} result of Matrix call
    */
   uploadFile (file, filename, type = 'application/text') {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       // TODO: Check if file name follows MXC syntax
       // mxc://<server-name>/<media-id>
       //    <server-name> : The name of the homeserver where this content originated, e.g. matrix.org
@@ -404,7 +417,7 @@ module.exports = class Matrix {
    * @returns {Promise} result of Matrix call
    */
   downloadFile (mediaId, filename, serverName = this.serverName) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const apiCall = this.media + 'download/' + serverName + '/' + mediaId + '/' + filename
       axios.get(apiCall)
         .then((res) => {
