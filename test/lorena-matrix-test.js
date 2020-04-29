@@ -84,6 +84,14 @@ describe('Matrix - Lorena API', function () {
     expect(response).to.be.ok
   })
 
+  it('should fail to sendMessage without a roomId', async () => {
+    await expect(matrix.sendMessage(
+      '', // roomId blank
+      'm.text', // type
+      'Hello this is a test message...' // body
+    )).to.be.rejectedWith(Error)
+  })
+
   it('should fail to send message if not connected', async () => {
     const matrix = new Matrix(matrixURL)
     await expect(matrix.sendMessage(roomId, 'm.text', 'hello')).to.be.rejectedWith(Error)

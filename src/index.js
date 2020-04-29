@@ -224,6 +224,10 @@ module.exports = class Matrix {
    */
   sendMessage (roomId, type, body, token = false) {
     return new Promise((resolve, reject) => {
+      if (!roomId) {
+        reject(new Error('sendMessage: invalid roomId'))
+        return
+      }
       const apiToken = (token === false) ? this.connection.access_token : token
       const apiSendMessage = this.api + 'rooms/' + escape(roomId) + '/send/m.room.message/' + this.txnId + '?access_token=' + apiToken
       axios.put(apiSendMessage, {
