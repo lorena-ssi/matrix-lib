@@ -5,10 +5,14 @@ const axiosRetry = require('axios-retry')
 // Retry with step-back to solve rate limiting problem
 axiosRetry(axios, {
   retries: 5,
-  retryDelay: axiosRetry.exponentialDelay,
+  retryAfterMs: 0,
+  retryDelay: () => {
+    return this.retryAfterMs
+  },
   retryCondition: (e) => {
     if (e.response.status === 429) {
       debug('retrying due to rate limiting', e)
+      this.retryAfterMs = e.response.data.retry_after_ms
       return true
     } else {
       return false
